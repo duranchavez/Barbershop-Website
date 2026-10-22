@@ -39,12 +39,40 @@ const updateHeadingText = (newText) => {
     if (!heading) return;
     heading.textContent = newText;
 };
+
 // -----Event Listeners --
 //1)  set year on page load
 setCurrentYear();
 //2) Hamburger menu toggle
 if (menuBtn) {
-    menuBtn.addEventListener("click, () => {
+    menuBtn.addEventListener("click", () => {
         toggleMobileMenu();
     });
-    }
+}
+// 3) Close mobile menu when a mobile link is clicked (event delegation)
+if (mobileMenu) {
+    mobileMenu.addEventListener("click", (Event) => {
+// if they clicked an <a> inside the menu, close it
+if (Event.target.tagName === "A") {
+    closeMobileMenu();
+}
+ });
+}
+// $) CTA Button: "Book now" (placeholder behavior)
+if (ctaBtn) {
+    ctaBtn.addEventListener("click", () => {
+        updateHeadingText("Booking coming next--great choice!");
+    });
+}
+// 5) call Button: "Book now (placeholder)
+if (callBtn) {
+    callBtn.addEventListener("click", () => {
+        // if you later set phoneLink href to tel:. this will work pertficly
+        // for now this is a beginner friendly placeholder
+        if (phoneLink) {
+            updateHeadingText("Call us at "+ phoneLink.textContent);
+        } else {
+            updateHeadingText("Call feature comming next!");
+        }
+    });
+}
