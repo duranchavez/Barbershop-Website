@@ -12,6 +12,7 @@ const phoneLink =document.getElementById("phoneLink");
 const heading = document.getElementById("heroheading");
 const featureGrid = document.getElementById("featureGrid");
 const nav = document.getElementById("nav");
+const siteHeader = document.querySelector(".site-header");
 // ------- service Data (Array of objects)
 const services = [
     {
@@ -32,7 +33,7 @@ const services = [
 ];
 //--------Navigation Data (Array of Object)------
 const navLinks = [
-    {label:"home", href:"#hero"},
+    {label:"Home", href:"#hero"},
     {label:"Services", href:"#features"},
     {label:"Book", href:"#cta"},
     {label:"Contact", href:"#footer"}
@@ -66,7 +67,15 @@ const updateHeadingText = (newText) => {
     if (!heading) return;
     heading.textContent = newText;
 };
-
+// adds the is-scroled class to the site-header DOM elemant
+const handleHeaderOnScroll = () => {
+    if(!siteHeader) return;
+    if(window.scrollY > 10) {
+        siteHeader.classList.add("is-scrolled");
+    } else {
+        siteHeader.classList.remove("is-scrolled");
+    }
+};
 // -----Event Listeners --
 //1)  set year on page load
 setCurrentYear();
@@ -103,6 +112,10 @@ if (callBtn) {
         }
     });
 }
+// 6) rounds navbar and makes it sticky
+window.addEventListener("scroll", handleHeaderOnScroll);
+// Runs once on page load in case user refreshers mid-scrol
+handleHeaderOnScroll();
 // Teaching Breakdown
 // array.forEach( item => {
 //// create element
