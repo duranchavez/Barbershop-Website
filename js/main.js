@@ -11,6 +11,7 @@ const callBtn = document.getElementById("callBtn");
 const phoneLink =document.getElementById("phoneLink");
 const heading = document.getElementById("heroheading");
 const featureGrid = document.getElementById("featureGrid");
+const nav = document.getElementById("nav");
 // ------- service Data (Array of objects)
 const services = [
     {
@@ -28,6 +29,13 @@ const services = [
         text: "Hot towel treatment with a smooth traditional shave.",
         image: "assets/images/feature-3.jpg"
     }
+];
+//--------Navigation Data (Array of Object)------
+const navLinks = [
+    {label:"home", href:"#hero"},
+    {label:"Services", href:"#features"},
+    {label:"Book", href:"#cta"},
+    {label:"Contact", href:"#footer"}
 ];
 //---- Helpers / Functions---
 //Update footer year automactically
@@ -95,23 +103,100 @@ if (callBtn) {
         }
     });
 }
+// Teaching Breakdown
+// array.forEach( item => {
+//// create element
+// insert data
+// add to page
+// });
+// this is REAL frontend logic
+// Now our fraeture cards are:
+// Generated with JS
+// Data-driven
+// easy to update
+// Change ONE object --> UI updates automactically
+// 
+//  ------ Render Featurea using forEach--------
+// const renderFeatures = () => {
+//     if (!featureGrid) return;
+//     services.forEach(service => {
+//         const card = document.createElement("article");
+//         card.classList.add("feature-card"); // innerHTML  allows us to read or change  anything inside of an element it has accses to
+//         card.innerHTML = ` 
+//         <img src="${service.image}" alt="${service.title}" class="feature-img"
+//         />
+//         <h3 class="feature-title">${service.title}</h3>
+//         <p = class="feature-text">${service.text}</p>
+//         `; // tempeteliterals uses the `${}` and allows us to structure how we want our data returned
+//         featureGrid.appendChild(card);
+//     });
+// };
 
-// ------ Render Featurea using forEach--------
-const renderFeatures = () => {
-    if (!featureGrid) return;
-    services.forEach(service => {
-        const card = document.createElement("article");
-        card.classList.add("feature-card"); // innerHTML  allows us to read or change  anything inside of an element it has accses to
-        card.innerHTML = ` 
-        <img src="${service.image}" alt="${service.title}" class="feature-img"
-        />
-        <h3 class="feature-title">${service.title}</h3>
-        <p = class="feature-text">${service.text}</p>
-        `; // tempeteliterals uses the `${}` and allows us to structure how we want our data returned
-        featureGrid.appendChild(card);
-    });
-};
+// = assigns the value of
 
 // -------- Function Calls -----
-renderFeatures();
-//
+const renderFeaturesMap = () => {
+    const cardsHTML = services.map( service => {
+        return `
+        <article class="feature-card">
+        <img src="${service.image}" alt="${service.title}" class="feature-img" />
+        <h3 class="feature-title">${service.title}</h3>
+        <p class="feature-text">${service.text}</p>
+        </article>
+        `;
+    }).join("");
+    featureGrid.innerHTML = cardsHTML;// cardsHTML = ['<article></article>','<article></article>','<article></article>']
+};
+
+//------ Render Navigation using map()------
+const renderNavigation = () => {
+    // Desktop nav
+    if (nav) {
+        const navHTML = navLinks.map(link => {
+            return `
+            <a href="${link.href}" class="nav-link">${link.label}</a>
+            `;}).join("");
+            nav.innerHTML = navHTML;
+        };
+        //Mobile nav
+        if (mobileMenu) {
+            const mobileHTML = navLinks.map(link => {
+                return `
+                <a href="${link.href}" class="mobile-link">${link.label}</a>
+                `;}).join("");
+                mobileMenu.innerHTML = mobileHTML;
+            };
+        };
+// array.map
+// -> returns HTML
+// -> join("")
+// -> insert into DOM
+// Our Navigation now:
+// comes from data
+// updates instantly if the array changes
+//works in desktop + mobile
+//uses modern JS patterns
+
+// This: navLinks.map(link => ...)
+// is basically:
+// {navLinks.map(link...)} in react
+
+// Skill                Concept
+// Objects arrays       Data structure
+// map()                transform data
+// Templete lierals     Dynamic HTML
+// DOM rendering        UI generation
+
+// ----Function calls----
+//renderfeatures();
+renderFeaturesMap();
+renderNavigation();
+// Key Teaching Difference
+// Method           what happens
+// forEach()         builds elements manually
+// map()            Returns HTML strings
+
+// we are doing now
+// Data.map()
+// which equals:
+// export default function cards = {data.map()} in react
