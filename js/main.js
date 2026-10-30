@@ -13,23 +13,111 @@ const heading = document.getElementById("heroheading");
 const featureGrid = document.getElementById("featureGrid");
 const nav = document.getElementById("nav");
 const siteHeader = document.querySelector(".site-header");
+// ----- Modal Elements -----
+const serviceModal = document.getElementById("serviceModal");
+const serviceModalOverlay = document.getElementById("serviceModalOverlay");
+const serviceModalClose = document.getElementById("serviceModalClose");
+const serviceModalTitle = document.getElementById("serviceModalTitle");
+const serviceModalPrice = document.getElementById("serviceModalPrice");
+const serviceModalList = document.getElementById("serviceModalList");
 // ------- service Data (Array of objects)
 const services = [
     {
-    title:"Classic Haircut",
-    text:"Timeless cuts with modern precesion tailored to your needs",
-    image: "assets/images/Feature-1.jpg"
+        id:1,
+        title: "Classic Haircuts",
+        image: "assets/images/feature-1.jpg",
+        alt: "Classic Haircuts",
+        description: "Timeless cuts with modern precision-tailored to your style.",
+        price: 25,
+        popular: true,
+        deatails: [
+            "Consulation with your barber before the cut begins.",
+            "Hair sectioning and shape-up based on your preferred style.",
+            "Professional clippers, trimers, and shears used for precision.",
+            "Neckline cleanup and finishing touches included.",
+            "Light styling product applied for a clean final look."
+        ]
     },
     {
-        title: "Beard trim",
-        text:  "Shape and line-up your beard for a clean, sharp finish.",
-        image: "assets/images/feature-2.jpg"
+        id: 2,
+        title: "Beard Trim",
+        image: "assets/images/feature-2.jpg",
+        alt: "Beard Trim",
+        description: "Shape, line-up, and refine your beard for a clean finish.",
+        price: 15,
+        popular: false,
+        details: [
+            "Beard assessment and shaping based on face structure.",
+            "Line-up around cheeks, jawline, and neckline.",
+            "Trimmers and detail tools used for crisp edges.",
+            "Conditioning beard product may be applied for softness.",
+            "Final symmetry check for a polished finish"
+        ]
     },
     {
+        id: 3,
         title: "Straight Razor Shave",
-        text: "Hot towel treatment with a smooth traditional shave.",
-        image: "assets/images/feature-3.jpg"
-    }
+        image: "assets/images/feature-3.jpg",
+        alt: "Straight Razor Shave",
+        description: "Hot towel, smooth shave, and classic barbershop experience.",
+        price: 30,
+        popular: true,
+        details: [
+            "Hot towel prep to soften facial hair and open pores.",
+            "Premium shaaving cream or lather applied to protect the skin.",
+            "Straight razor shave performed with careful detailing.",
+            "Second hot towel may be used for comfort and cleanup.",
+            "Aftershave or soothing skin product applied after service"
+        ]
+    },
+    {
+        id: 4,
+        title: "Fade & Style",
+        image: "assets/images/feature-4.jpg",
+        alt: "Fade haircut",
+        description: "A clean fade with finishing detail for a sharp, modern look.",
+        price: 35,
+        popular: false,
+        details: [
+            "Style consulation before clipper work begins.",
+            "Fade blended to your preferred level and finish.",
+            "Detailing around temples, neckline, and beard area if needed.",
+            "Sicissors and clipper-over-comb may be used for texture.",
+            "Styling product added to complete the final look."
+        ]
+    },
+    {
+        id: 5,
+        title: "Kids Cut",
+        image: "assets/images/feature-5.jpg",
+        alt: "Kids haircut",
+        description: "Clean comfortable haircut service for younger clients.",
+        price: 20, 
+        popular: false, 
+        details: [
+            "Simple consulation with child and parent if needed.",
+            "Age-approiate haircut with comfort in mind.",
+            "Careful clipper and scissors work for a clean finish.",
+            "Light cleanup around the neckline and ears.",
+            "Styled neatly before leaving the chair."
+        ]
+    },
+    {
+        id: 6,
+        title: "Head Shave",
+        image: "assets/images/feature-6.jpg",
+        alt: "Head shave",
+        description: "Smooth head shave with classic barbershop treatment.",
+        price: 28, 
+        popular: true,
+        details: [
+            "Scalp prep with warm towel treatment.",
+            "Protective shave product applied before razor work.",
+            "Close shave performed for a smooth finish.",
+            "Scalp cleaned and checked for even consistency.",
+            "Moisturizing scalp product applied after the shave."
+        ] 
+    },
 ];
 //--------Navigation Data (Array of Object)------
 const navLinks = [
@@ -76,6 +164,25 @@ const handleHeaderOnScroll = () => {
         siteHeader.classList.remove("is-scrolled");
     }
 };
+// ---- Modal Logic ----
+const openServiceModal = (serviceId) => {
+    if (!serviceModal || !serviceModalTitle || !serviceModalPrice || !serviceModalList) return;
+    const selectedService = services.find((service) => service.id === Number(serviceId));
+    if (!selectedService) return;
+    serviceModalTitle.textContent = selectedService.title;
+    serviceModalPrice.textContent = `$${selectedService.price}`;
+    serviceModalList.innerHTML = selectedService.details.map((detail) =>  `<li>${detail}</li>`)
+    .join("");
+    serviceModal.classList.add("is-open");
+    serviceModal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+};
+const closeServiceModal = () => {
+    if(!serviceModal) return;
+    serviceModal.classList.remove("is-open");
+    serviceModal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+};
 // -----Event Listeners --
 //1)  set year on page load
 setCurrentYear();
@@ -116,6 +223,74 @@ if (callBtn) {
 window.addEventListener("scroll", handleHeaderOnScroll);
 // Runs once on page load in case user refreshers mid-scrol
 handleHeaderOnScroll();
+// 7) Open/Close Service Modals
+if (featureGrid) {
+    featureGrid.addEventListener("click", (event) => {
+        const clickedButton = event.target.closest(".service-details-btn");
+        if (!clickedButton) return;
+        const serviceId = clickedButton.dataset.serviceId;
+        openServiceModal(serviceId);
+    });
+}
+if (serviceModalClose) {
+    serviceModalClose.addEventListener("click", closeServiceModal);
+}
+if (serviceModalOverlay) {
+    serviceModalOverlay.addEventListener("click", closeServiceModal);
+}
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        closeServiceModal();
+    }
+});
+// -- Render Functions ---
+const renderNavigation = () => {
+    if (nav) {
+        const navHTML = navLinks.map((link) => `<a href="${link.href}" class="nav-link">${link.label}</a>`)
+        .join("");
+        nav.innerHTML = navHTML;
+    }
+    if (mobileMenu) {
+        const mobileHTML = navLinks.map((link) => `<a href="${link.href}" class="mobile-link">${link.label}</a>`)
+        .join("");
+mobileMenu.innerHTML = mobileHTML;
+    }
+};
+const renderServices = () => {
+    if (!featureGrid) return;
+    const servicesHTML = services.map((service) => {
+        let badgeHTML = "";
+if (service.popular) {
+    badgeHTML = `<p class="service-badge">Popular Choice</p>`;
+} else {
+    badgeHTML = `<p class="service-badge alt-badge">Barber Favorite</p>`;
+}
+return `
+<article class="feature-card">
+<img
+src="${service.image}"
+alt="${service.alt}"
+class="feature-img"
+/>
+<h3 class="feature-title">${service.title}</h3>
+<p class="feature-text">${service.description}</p>
+${badgeHTML}
+<p class="service-price">$${service.price}</p>
+<div class="service-actions">
+<button
+class="service-details-btn"
+type="button"
+data-service-id="${service.id}"
+    >
+    View Details
+    </button>
+    </div>
+    </article>
+    `;
+})
+.join("");
+featureGrid.innerHTML = servicesHTML;
+};
 // Teaching Breakdown
 // array.forEach( item => {
 //// create element
@@ -148,38 +323,38 @@ handleHeaderOnScroll();
 // = assigns the value of
 
 // -------- Function Calls -----
-const renderFeaturesMap = () => {
-    const cardsHTML = services.map( service => {
-        return `
-        <article class="feature-card">
-        <img src="${service.image}" alt="${service.title}" class="feature-img" />
-        <h3 class="feature-title">${service.title}</h3>
-        <p class="feature-text">${service.text}</p>
-        </article>
-        `;
-    }).join("");
-    featureGrid.innerHTML = cardsHTML;// cardsHTML = ['<article></article>','<article></article>','<article></article>']
-};
+// const renderFeaturesMap = () => {
+//     const cardsHTML = services.map( service => {
+//         return `
+//         <article class="feature-card">
+//         <img src="${service.image}" alt="${service.title}" class="feature-img" />
+//         <h3 class="feature-title">${service.title}</h3>
+//         <p class="feature-text">${service.text}</p>
+//         </article>
+//         `;
+//     }).join("");
+//     featureGrid.innerHTML = cardsHTML;// cardsHTML = ['<article></article>','<article></article>','<article></article>']
+// };
 
 //------ Render Navigation using map()------
-const renderNavigation = () => {
-    // Desktop nav
-    if (nav) {
-        const navHTML = navLinks.map(link => {
-            return `
-            <a href="${link.href}" class="nav-link">${link.label}</a>
-            `;}).join("");
-            nav.innerHTML = navHTML;
-        };
-        //Mobile nav
-        if (mobileMenu) {
-            const mobileHTML = navLinks.map(link => {
-                return `
-                <a href="${link.href}" class="mobile-link">${link.label}</a>
-                `;}).join("");
-                mobileMenu.innerHTML = mobileHTML;
-            };
-        };
+// const renderNavigation = () => {
+    // // Desktop nav
+    // if (nav) {
+    //     const navHTML = navLinks.map(link => {
+    //         return `
+    //         <a href="${link.href}" class="nav-link">${link.label}</a>
+    //         `;}).join("");
+    //         nav.innerHTML = navHTML;
+    //     };
+    //     //Mobile nav
+    //     if (mobileMenu) {
+    //         const mobileHTML = navLinks.map(link => {
+    //             return `
+    //             <a href="${link.href}" class="mobile-link">${link.label}</a>
+    //             `;}).join("");
+    //             mobileMenu.innerHTML = mobileHTML;
+    //         };
+    //     };
 // array.map
 // -> returns HTML
 // -> join("")
@@ -202,8 +377,9 @@ const renderNavigation = () => {
 
 // ----Function calls----
 //renderfeatures();
-renderFeaturesMap();
+renderServices();
 renderNavigation();
+// renderFeaturesMap();
 // Key Teaching Difference
 // Method           what happens
 // forEach()         builds elements manually
